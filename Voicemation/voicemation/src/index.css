@@ -1,0 +1,79 @@
+@import 'tailwindcss';
+
+/* Custom utility classes */
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;  /* Chrome, Safari and Opera */
+}
+
+/* Gradient text utility */
+.gradient-text {
+  background: linear-gradient(135deg, #a78bfa 0%, #60a5fa 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Smooth transitions for interactive elements */
+* {
+  transition-property: transform, box-shadow, background-color, border-color;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 200ms;
+}
+
+/* Disable transitions for specific elements */
+input, textarea, video {
+  transition: none !important;
+}
+
+/* Pulse animation for glowing elements */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.1);
+  }
+}
+
+/* Glow animation */
+@keyframes glow {
+  0%, 100% {
+    box-shadow: 0 0 30px rgba(59, 130, 246, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 60px rgba(59, 130, 246, 0.8);
+  }
+}
+
+/* Add auto-scrolling animation for suggestion chips */
+@keyframes scroll-x {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-100%); }
+}
+
+/* Custom classes for animation player */
+.animation-container {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.animation-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0; /* This is important for nested flex containers */
+}
+
+.animation-player {
+  flex: 1;
+  position: relative;
+  min-height: 0; /* This is important to allow the container to grow */
+}
