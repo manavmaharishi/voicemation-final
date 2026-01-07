@@ -139,7 +139,7 @@ export default function Dashboard({ activeConversation }) {
         transition={{ delay: 0.2 }}
       >
         <div className="max-w-2xl mx-auto">
-          <h1 className="text-lg font-semibold text-blue-100">Voicemation</h1>
+          <h1 className="text-lg font-semibold text-blue-100">Edumation</h1>
         </div>
       </motion.div>
 
@@ -181,7 +181,7 @@ export default function Dashboard({ activeConversation }) {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.4 }}
                 >
-                  Voicemation
+                  Edumation
                 </motion.h2>
                 <motion.p 
                   className="text-sm text-gray-400 mb-4"

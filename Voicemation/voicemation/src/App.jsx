@@ -3,9 +3,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Sidebar from './components/Sidebar';
 import Dashboard from './components/Dashboard';
 import ErrorBoundary from './components/ErrorBoundary';
+import LandingPage from './components/LandingPage';
 import { AnimationProvider } from './context/AnimationContext';
 
 function App() {
+  const [showLanding, setShowLanding] = useState(true);
   const [conversations, setConversations] = useState([
     {
       id: 1,
@@ -51,6 +53,20 @@ function App() {
     );
   };
 
+  const handleGetStarted = () => {
+    setShowLanding(false);
+  };
+
+  // Show landing page first
+  if (showLanding) {
+    return (
+      <ErrorBoundary>
+        <LandingPage onGetStarted={handleGetStarted} />
+      </ErrorBoundary>
+    );
+  }
+
+  // Show main app after "Get Started" is clicked
   return (
     <ErrorBoundary>
       <AnimationProvider>

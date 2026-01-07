@@ -1,6 +1,8 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+
 const VoiceInputSimple = ({ onResult }) => {
   const [isRecording, setIsRecording] = useState(false);
   const [text, setText] = useState('');
@@ -207,67 +209,179 @@ const VoiceInputSimple = ({ onResult }) => {
         }}>Record Your Voice</h3>
         
         {/* In Depth Mode Toggle */}
-        <div className="flex items-center justify-center mb-4">
+        <div className="flex items-center justify-center mb-5">
           <motion.button
             onClick={() => setInDepthMode(!inDepthMode)}
-            className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 flex items-center gap-2 ${
+            className={`group relative px-6 py-3 rounded-2xl text-sm font-semibold transition-all duration-300 flex items-center gap-3 overflow-hidden ${
               inDepthMode
-                ? 'bg-gradient-to-r from-purple-600/40 to-indigo-600/40 border-2 border-purple-400/60 text-purple-100'
-                : 'bg-gray-700/60 border border-gray-500/50 text-gray-300 hover:bg-gray-600/60 hover:border-gray-400/50'
+                ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-xl'
+                : 'bg-gradient-to-r from-gray-800 to-gray-700 text-gray-300 hover:from-gray-700 hover:to-gray-600'
             }`}
-            whileHover={{ scale: 1.02 }}
+            whileHover={{ scale: 1.05, y: -2 }}
             whileTap={{ scale: 0.98 }}
             style={inDepthMode ? {
-              boxShadow: '0 0 25px rgba(168, 85, 247, 0.3), 0 0 50px rgba(168, 85, 247, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1)'
-            } : {}}
+              boxShadow: '0 10px 40px rgba(168, 85, 247, 0.4), 0 0 60px rgba(168, 85, 247, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.2)'
+            } : {
+              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1)'
+            }}
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-            </svg>
-            {inDepthMode ? 'In Depth Mode ON' : 'In Depth Mode'}
+            {/* Background glow effect */}
             {inDepthMode && (
               <motion.div
-                className="w-2 h-2 bg-purple-400 rounded-full"
-                animate={{ scale: [1, 1.2, 1] }}
+                className="absolute inset-0 bg-gradient-to-r from-purple-400/30 to-indigo-400/30 blur-xl"
+                animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0.8, 0.5] }}
+                transition={{ duration: 2, repeat: Infinity }}
+              />
+            )}
+            
+            {/* Icon */}
+            <motion.svg 
+              className="w-5 h-5 relative z-10" 
+              fill="none" 
+              stroke="currentColor" 
+              viewBox="0 0 24 24"
+              animate={inDepthMode ? { 
+                rotate: [0, 10, -10, 10, 0],
+                scale: [1, 1.1, 1]
+              } : {}}
+              transition={{ duration: 2, repeat: Infinity }}
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </motion.svg>
+            
+            {/* Text */}
+            <span className="relative z-10 tracking-wide">
+              {inDepthMode ? 'In-Depth Mode Active' : 'Enable In-Depth Mode'}
+            </span>
+            
+            {/* Pulse indicator */}
+            {inDepthMode && (
+              <motion.div
+                className="w-2.5 h-2.5 bg-white rounded-full relative z-10 shadow-lg"
+                animate={{ 
+                  scale: [1, 1.4, 1],
+                  opacity: [1, 0.7, 1]
+                }}
                 transition={{ duration: 1.5, repeat: Infinity }}
               />
             )}
           </motion.button>
         </div>
         
-        <div className="flex flex-col items-center space-y-3 relative">
+        <div className="flex flex-col items-center space-y-4 relative">
+          {/* Animated background glow */}
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <div className="w-40 h-40 bg-blue-500/20 rounded-full blur-[80px]" style={{
-              animation: 'pulse 3s ease-in-out infinite'
-            }}></div>
+            <motion.div 
+              className="w-48 h-48 rounded-full blur-[100px]"
+              style={{
+                background: isRecording 
+                  ? 'radial-gradient(circle, rgba(239, 68, 68, 0.3) 0%, rgba(239, 68, 68, 0) 70%)'
+                  : 'radial-gradient(circle, rgba(59, 130, 246, 0.25) 0%, rgba(59, 130, 246, 0) 70%)'
+              }}
+              animate={{
+                scale: isRecording ? [1, 1.2, 1] : [1, 1.1, 1],
+                opacity: isRecording ? [0.5, 0.8, 0.5] : [0.3, 0.5, 0.3]
+              }}
+              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+            />
           </div>
+          
+          {/* Main recording button */}
           <motion.button
             onClick={isRecording ? stopRecording : startRecording}
             disabled={isSubmitting}
-            className={`w-16 h-16 rounded-full border-4 transition-all duration-200 flex items-center justify-center relative z-10 ${
+            className={`group relative w-20 h-20 rounded-full transition-all duration-300 flex items-center justify-center z-10 overflow-hidden ${
               isRecording
-                ? 'bg-gradient-to-br from-red-500/30 to-pink-500/30 border-red-400 text-red-300 scale-110'
-                : 'bg-gradient-to-br from-blue-600/30 to-indigo-600/30 border-blue-500 text-blue-300 hover:scale-105'
+                ? 'bg-gradient-to-br from-red-600 to-pink-600 scale-110'
+                : 'bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600'
             }`}
-            whileHover={{ scale: isRecording ? 1.1 : 1.05 }}
+            whileHover={{ scale: isRecording ? 1.15 : 1.1 }}
             whileTap={{ scale: 0.95 }}
             style={isRecording ? {
-              boxShadow: '0 0 30px rgba(239, 68, 68, 0.5), 0 0 60px rgba(239, 68, 68, 0.25)'
+              boxShadow: '0 0 40px rgba(239, 68, 68, 0.6), 0 0 80px rgba(239, 68, 68, 0.3), 0 10px 40px rgba(239, 68, 68, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3)'
             } : {
-              boxShadow: '0 0 25px rgba(59, 130, 246, 0.4), 0 0 50px rgba(59, 130, 246, 0.2)'
+              boxShadow: '0 0 35px rgba(59, 130, 246, 0.5), 0 0 70px rgba(59, 130, 246, 0.25), 0 10px 40px rgba(59, 130, 246, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.2)'
             }}
           >
-            <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+            {/* Ripple effect when recording */}
+            {isRecording && (
+              <>
+                <motion.div
+                  className="absolute inset-0 border-4 border-red-400 rounded-full"
+                  animate={{ 
+                    scale: [1, 1.5, 1.5],
+                    opacity: [0.8, 0, 0]
+                  }}
+                  transition={{ 
+                    duration: 1.5,
+                    repeat: Infinity,
+                    ease: "easeOut"
+                  }}
+                />
+                <motion.div
+                  className="absolute inset-0 border-4 border-red-400 rounded-full"
+                  animate={{ 
+                    scale: [1, 1.5, 1.5],
+                    opacity: [0.8, 0, 0]
+                  }}
+                  transition={{ 
+                    duration: 1.5,
+                    repeat: Infinity,
+                    ease: "easeOut",
+                    delay: 0.5
+                  }}
+                />
+              </>
+            )}
+            
+            {/* Shine effect overlay */}
+            <div className="absolute inset-0 bg-gradient-to-br from-white/30 to-transparent rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            
+            {/* Icon */}
+            <motion.svg 
+              className="w-8 h-8 text-white relative z-10 drop-shadow-lg" 
+              fill="currentColor" 
+              viewBox="0 0 24 24"
+              animate={isRecording ? {
+                scale: [1, 1.1, 1]
+              } : {}}
+              transition={{ duration: 0.5, repeat: isRecording ? Infinity : 0 }}
+            >
               {isRecording ? (
                 <path d="M6 6h12v12H6z" />
               ) : (
                 <path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3zM19 11a7 7 0 0 1-14 0V9a1 1 0 0 1 2 0v2a5 5 0 0 0 10 0V9a1 1 0 0 1 2 0v2z" />
               )}
-            </svg>
+            </motion.svg>
           </motion.button>
-          <p className="text-sm text-gray-400 text-center">
-            {isRecording ? 'Click to stop recording' : 'Click to start recording'}
-          </p>
+          
+          {/* Description text with better styling */}
+          <motion.p 
+            className="text-sm font-medium text-center"
+            animate={{
+              color: isRecording ? 'rgb(252, 165, 165)' : 'rgb(156, 163, 175)'
+            }}
+          >
+            <span className="flex items-center gap-2 justify-center">
+              {isRecording ? (
+                <>
+                  <motion.span
+                    className="inline-block w-2 h-2 bg-red-500 rounded-full"
+                    animate={{ opacity: [1, 0.3, 1] }}
+                    transition={{ duration: 1, repeat: Infinity }}
+                  />
+                  Recording in progress...
+                </>
+              ) : (
+                <>
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                  </svg>
+                  Click to start voice recording
+                </>
+              )}
+            </span>
+          </motion.p>
         </div>
       </motion.div>
 
@@ -289,30 +403,76 @@ const VoiceInputSimple = ({ onResult }) => {
           backgroundClip: 'text'
         }}>Or Type Your Message</h3>
         <div className="flex space-x-3">
-          <input
-            ref={textInputRef}
-            type="text"
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-            onKeyPress={(e) => e.key === 'Enter' && !isSubmitting && handleTextSubmit()}
-            placeholder="Enter text to generate animation..."
-            className="flex-1 bg-gray-900/70 text-white px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400/60 focus:bg-gray-900/90 transition-all backdrop-blur-sm border border-blue-500/30 placeholder-gray-400 font-medium"
-            disabled={isSubmitting || isRecording}
-            style={{
-              boxShadow: 'inset 0 2px 8px rgba(0, 0, 0, 0.4), 0 0 20px rgba(59, 130, 246, 0.1)'
-            }}
-          />
+          <div className="flex-1 relative">
+            <input
+              ref={textInputRef}
+              type="text"
+              value={text}
+              onChange={(e) => setText(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && !isSubmitting && handleTextSubmit()}
+              placeholder="Enter your concept for animation..."
+              className="w-full bg-gray-900/80 text-white px-5 py-4 pr-12 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400/60 focus:bg-gray-900/90 transition-all backdrop-blur-sm border border-blue-500/30 placeholder-gray-400 font-medium text-base"
+              disabled={isSubmitting || isRecording}
+              style={{
+                boxShadow: 'inset 0 2px 8px rgba(0, 0, 0, 0.4), 0 0 20px rgba(59, 130, 246, 0.1)'
+              }}
+            />
+            {/* Character counter or icon */}
+            <div className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+              </svg>
+            </div>
+          </div>
           <motion.button
             onClick={handleTextSubmit}
             disabled={!text.trim() || isSubmitting || isRecording}
-            className="bg-gradient-to-br from-blue-600 via-blue-500 to-indigo-600 hover:from-blue-700 hover:via-blue-600 hover:to-indigo-700 disabled:from-gray-600 disabled:to-gray-700 disabled:cursor-not-allowed px-6 py-3 rounded-xl transition-all font-semibold text-white"
-            whileHover={{ scale: text.trim() && !isSubmitting && !isRecording ? 1.05 : 1 }}
-            whileTap={{ scale: 0.98 }}
+            className="group relative px-8 py-4 rounded-xl transition-all font-bold text-white text-base overflow-hidden disabled:opacity-50 disabled:cursor-not-allowed"
+            whileHover={{ scale: text.trim() && !isSubmitting && !isRecording ? 1.05 : 1, y: -2 }}
+            whileTap={{ scale: 0.97 }}
             style={text.trim() && !isSubmitting && !isRecording ? {
-              boxShadow: '0 0 25px rgba(59, 130, 246, 0.4), 0 4px 20px rgba(59, 130, 246, 0.3)'
-            } : {}}
+              background: 'linear-gradient(135deg, #3b82f6 0%, #6366f1 50%, #8b5cf6 100%)',
+              boxShadow: '0 0 30px rgba(59, 130, 246, 0.5), 0 10px 40px rgba(59, 130, 246, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.2)'
+            } : {
+              background: 'linear-gradient(135deg, #4b5563 0%, #6b7280 100%)',
+              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)'
+            }}
           >
-            {isSubmitting ? 'Generating...' : 'Generate'}
+            {/* Animated shine effect on hover */}
+            {text.trim() && !isSubmitting && !isRecording && (
+              <motion.div
+                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
+                initial={{ x: '-100%' }}
+                whileHover={{ x: '200%' }}
+                transition={{ duration: 0.6 }}
+              />
+            )}
+            
+            {/* Button content */}
+            <span className="relative z-10 flex items-center gap-2">
+              {isSubmitting ? (
+                <>
+                  <motion.svg
+                    className="w-5 h-5"
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                  </motion.svg>
+                  Generating...
+                </>
+              ) : (
+                <>
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                  </svg>
+                  Generate
+                </>
+              )}
+            </span>
           </motion.button>
         </div>
       </motion.div>

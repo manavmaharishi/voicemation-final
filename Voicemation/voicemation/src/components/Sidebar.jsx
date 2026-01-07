@@ -113,7 +113,7 @@ export default function Sidebar({
         </motion.button>
       </motion.div>
 
-      {/* New Chat Button */}
+      {/* New Chat Button with enhanced styling */}
       <motion.div 
         className="p-3"
         initial={{ y: -20, opacity: 0 }}
@@ -122,17 +122,32 @@ export default function Sidebar({
       >
         <motion.button 
           onClick={onNewConversation}
-          className="w-full flex items-center justify-center gap-3 p-3 rounded-lg border border-blue-500/40 bg-gradient-to-r from-blue-600/25 to-indigo-600/25 hover:from-blue-600/35 hover:to-indigo-600/35 transition-all font-medium"
-          whileHover={{ scale: 1.02 }}
+          className="group relative w-full flex items-center justify-center gap-3 p-4 rounded-xl border border-blue-500/40 bg-gradient-to-r from-blue-600/30 to-indigo-600/30 hover:from-blue-600/40 hover:to-indigo-600/40 transition-all font-semibold text-white overflow-hidden"
+          whileHover={{ scale: 1.02, y: -2 }}
           whileTap={{ scale: 0.98 }}
           style={{
-            boxShadow: '0 0 15px rgba(59, 130, 246, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.05)'
+            boxShadow: '0 0 20px rgba(59, 130, 246, 0.2), 0 5px 20px rgba(59, 130, 246, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1)'
           }}
         >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-          </svg>
-          New chat
+          {/* Animated shine effect */}
+          <motion.div
+            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent"
+            initial={{ x: '-100%' }}
+            whileHover={{ x: '200%' }}
+            transition={{ duration: 0.6 }}
+          />
+          
+          <motion.svg 
+            className="w-5 h-5 relative z-10" 
+            fill="none" 
+            stroke="currentColor" 
+            viewBox="0 0 24 24"
+            whileHover={{ rotate: 90 }}
+            transition={{ duration: 0.3 }}
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
+          </motion.svg>
+          <span className="relative z-10">New Conversation</span>
         </motion.button>
       </motion.div>
 
@@ -153,13 +168,13 @@ export default function Sidebar({
               <motion.button
                 key={conversation.id}
                 onClick={() => onSelectConversation(conversation.id)}
-                className={`w-full text-left p-3 rounded-lg transition-all group relative ${
+                className={`w-full text-left p-4 rounded-xl transition-all group relative overflow-hidden ${
                   activeConversation === conversation.id 
-                    ? 'bg-gradient-to-r from-blue-600/30 to-indigo-600/30 border border-blue-400/40' 
+                    ? 'bg-gradient-to-r from-blue-600/40 to-indigo-600/40 border border-blue-400/50' 
                     : 'hover:bg-white/5 border border-transparent hover:border-white/10'
                 }`}
                 style={activeConversation === conversation.id ? {
-                  boxShadow: '0 0 20px rgba(59, 130, 246, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.05)'
+                  boxShadow: '0 0 25px rgba(59, 130, 246, 0.2), 0 5px 20px rgba(59, 130, 246, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1)'
                 } : {}}
                 layout
                 initial={{ x: -20, opacity: 0 }}
@@ -170,15 +185,29 @@ export default function Sidebar({
                   opacity: { duration: 0.2 },
                   x: { duration: 0.3 }
                 }}
-                whileHover={{ x: 4 }}
+                whileHover={{ x: 5, scale: 1.01 }}
                 whileTap={{ scale: 0.98 }}
               >
+                {/* Active indicator bar */}
+                {activeConversation === conversation.id && (
+                  <motion.div
+                    className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-blue-400 to-indigo-500 rounded-r-full"
+                    layoutId="activeIndicator"
+                    transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                  />
+                )}
+                
                 <div className="flex items-center gap-3">
-                  <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <motion.svg 
+                    className={`w-5 h-5 flex-shrink-0 ${activeConversation === conversation.id ? 'text-blue-300' : 'text-gray-400'}`}
+                    fill="none" 
+                    stroke="currentColor" 
+                    viewBox="0 0 24 24"
+                    whileHover={{ scale: 1.1, rotate: 5 }}
+                  >
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                  </svg>
-                  <div className="flex-1 min-w-0">
-                    {renamingId === conversation.id ? (
+                  </motion.svg>
+                  <div className="flex-1 min-w-0">{renamingId === conversation.id ? (
                       <input
                         type="text"
                         value={renameValue}

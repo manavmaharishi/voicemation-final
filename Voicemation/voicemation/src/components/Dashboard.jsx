@@ -404,7 +404,7 @@ export default function Dashboard({ activeConversation, conversations, onUpdateM
                     filter: 'drop-shadow(0 0 20px rgba(139, 92, 246, 0.2))'
                   }}
                 >
-                  Welcome to Voicemation
+                  Welcome to Edumation
                 </motion.h1>
                 
                 {/* Motto with background glow */}
@@ -511,25 +511,37 @@ export default function Dashboard({ activeConversation, conversations, onUpdateM
                   >
                     {message.type === 'assistant' && (
                       <motion.div 
-                        className="w-8 h-8 bg-gradient-to-br from-blue-500 via-indigo-600 to-purple-600 rounded-full flex items-center justify-center flex-shrink-0"
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
+                        className="w-10 h-10 bg-gradient-to-br from-blue-500 via-indigo-600 to-purple-600 rounded-2xl flex items-center justify-center flex-shrink-0 relative overflow-hidden"
+                        initial={{ scale: 0, rotate: -180 }}
+                        animate={{ scale: 1, rotate: 0 }}
                         transition={{ delay: 0.1, type: "spring", stiffness: 260, damping: 20 }}
                         style={{
-                          boxShadow: '0 0 20px rgba(59, 130, 246, 0.4)'
+                          boxShadow: '0 0 25px rgba(59, 130, 246, 0.5), 0 10px 30px rgba(99, 102, 241, 0.3)'
                         }}
                       >
-                        <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                        {/* Animated gradient overlay */}
+                        <motion.div
+                          className="absolute inset-0 bg-gradient-to-tr from-white/30 to-transparent"
+                          animate={{ 
+                            rotate: [0, 360],
+                          }}
+                          transition={{ 
+                            duration: 3,
+                            repeat: Infinity,
+                            ease: "linear"
+                          }}
+                        />
+                        <svg className="w-5 h-5 text-white relative z-10 drop-shadow-lg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                         </svg>
                       </motion.div>
                     )}
                     <div className={`max-w-2xl ${message.type === 'user' ? 'order-first' : ''}`}>
                       <motion.div 
-                        className={`rounded-2xl p-4 relative ${
+                        className={`rounded-2xl p-5 relative overflow-hidden ${
                           message.type === 'user' 
                             ? 'bg-gradient-to-br from-blue-600 via-blue-500 to-indigo-600 text-white ml-auto' 
-                            : 'bg-gradient-to-br from-gray-800/70 to-gray-900/80 text-gray-100 backdrop-blur-xl border border-blue-500/20'
+                            : 'bg-gradient-to-br from-gray-800/80 to-gray-900/90 text-gray-100 backdrop-blur-xl border border-blue-500/20'
                         } ${message.animationId ? 'animation-message' : ''}`}
                         data-animation-id={message.animationId || null}
                         initial={{ scale: 0.95, opacity: 0 }}
@@ -541,20 +553,41 @@ export default function Dashboard({ activeConversation, conversations, onUpdateM
                           delay: 0.1 
                         }}
                         whileHover={{ 
-                          scale: 1.01
+                          scale: 1.01,
+                          transition: { duration: 0.2 }
                         }}
                         style={message.type === 'user' ? {
-                          boxShadow: '0 0 25px rgba(37, 99, 235, 0.3), 0 4px 20px rgba(59, 130, 246, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1)'
+                          boxShadow: '0 0 30px rgba(37, 99, 235, 0.35), 0 10px 40px rgba(59, 130, 246, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.15)'
                         } : {
-                          boxShadow: '0 4px 24px rgba(0, 0, 0, 0.4), 0 0 15px rgba(59, 130, 246, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.05)'
+                          boxShadow: '0 10px 40px rgba(0, 0, 0, 0.5), 0 0 20px rgba(59, 130, 246, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.05)'
                         }}
                       >
+                        {/* Shimmer effect for user messages */}
+                        {message.type === 'user' && (
+                          <motion.div
+                            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent"
+                            initial={{ x: '-100%' }}
+                            animate={{ x: '200%' }}
+                            transition={{ 
+                              duration: 2,
+                              repeat: Infinity,
+                              repeatDelay: 3,
+                              ease: "easeInOut"
+                            }}
+                          />
+                        )}
+                        
                         {message.animationId && (
                           <motion.div 
-                            className="absolute top-2 right-2 w-2 h-2 rounded-full bg-blue-400"
+                            className="absolute top-3 right-3 w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-lg"
                             animate={{
-                              scale: [1, 1.5, 1],
-                              opacity: [0.7, 1, 0.7]
+                              scale: [1, 1.3, 1],
+                              opacity: [0.8, 1, 0.8],
+                              boxShadow: [
+                                '0 0 10px rgba(52, 211, 153, 0.5)',
+                                '0 0 20px rgba(52, 211, 153, 0.8)',
+                                '0 0 10px rgba(52, 211, 153, 0.5)'
+                              ]
                             }}
                             transition={{
                               duration: 2,
@@ -563,9 +596,9 @@ export default function Dashboard({ activeConversation, conversations, onUpdateM
                             }}
                           />
                         )}
-                          
+                        
                         <motion.p 
-                          className="whitespace-pre-wrap text-sm md:text-base"
+                          className="whitespace-pre-wrap text-sm md:text-base leading-relaxed relative z-10"
                           initial={{ opacity: 0 }}
                           animate={{ opacity: 1 }}
                           transition={{ delay: 0.2 }}
@@ -580,20 +613,27 @@ export default function Dashboard({ activeConversation, conversations, onUpdateM
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.3 }}
                           >
-                            {/* Static Video Thumbnail */}
-                            <div className="bg-black rounded-lg overflow-hidden mb-3 relative cursor-pointer group"
-                                 onClick={() => {
-                                   const animation = {
-                                     id: message.animationId,
-                                     text: message.content.replace(/I've created an educational animation based on your concept: "/, '').replace(/"$/, ''),
-                                     videoUrl: message.videoUrl,
-                                     timestamp: message.timestamp
-                                   };
-                                   setCurrentAnimation(animation);
-                                   setShowAnimationModal(true);
-                                 }}>
+                            {/* Static Video Thumbnail with enhanced styling */}
+                            <motion.div 
+                              className="bg-black rounded-xl overflow-hidden mb-4 relative cursor-pointer group border border-blue-500/30"
+                              onClick={() => {
+                                const animation = {
+                                  id: message.animationId,
+                                  text: message.content.replace(/I've created an educational animation based on your concept: "/, '').replace(/"$/, ''),
+                                  videoUrl: message.videoUrl,
+                                  timestamp: message.timestamp
+                                };
+                                setCurrentAnimation(animation);
+                                setShowAnimationModal(true);
+                              }}
+                              whileHover={{ scale: 1.02 }}
+                              transition={{ duration: 0.2 }}
+                              style={{
+                                boxShadow: '0 10px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(59, 130, 246, 0.1)'
+                              }}
+                            >
                               <video 
-                                className="w-full h-32 object-contain"
+                                className="w-full h-36 object-contain"
                                 controls={false}
                                 muted
                                 playsInline
@@ -607,20 +647,32 @@ export default function Dashboard({ activeConversation, conversations, onUpdateM
                                 onLoadStart={() => console.log('Video loading started')}
                                 onLoadedData={() => console.log('Video loaded successfully')}
                               />
-                              {/* Play button overlay */}
-                              <div className="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/50 transition-colors">
-                                <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center group-hover:bg-white/30 transition-colors">
-                                  <svg className="w-6 h-6 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
+                              {/* Enhanced play button overlay */}
+                              <motion.div 
+                                className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-black/40 via-black/30 to-black/40 group-hover:from-black/60 group-hover:to-black/60 transition-all duration-300"
+                                initial={{ opacity: 0.8 }}
+                                whileHover={{ opacity: 1 }}
+                              >
+                                <motion.div 
+                                  className="w-16 h-16 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/30"
+                                  whileHover={{ 
+                                    scale: 1.15,
+                                    backgroundColor: 'rgba(255, 255, 255, 0.35)',
+                                    boxShadow: '0 0 30px rgba(59, 130, 246, 0.6), 0 10px 40px rgba(59, 130, 246, 0.4)'
+                                  }}
+                                  transition={{ type: "spring", stiffness: 400, damping: 20 }}
+                                >
+                                  <svg className="w-7 h-7 text-white ml-1 drop-shadow-lg" fill="currentColor" viewBox="0 0 24 24">
                                     <path d="M8 5v14l11-7z"/>
                                   </svg>
-                                </div>
-                              </div>
-                            </div>
+                                </motion.div>
+                              </motion.div>
+                            </motion.div>
                             
-                            {/* Play Fullscreen Button */}
-                            <div className="flex justify-end">
+                            {/* Enhanced Play Fullscreen Button */}
+                            <div className="flex justify-end gap-2">
                               <motion.button
-                                className="px-5 py-2 rounded-full bg-gradient-to-r from-blue-600/30 to-indigo-600/30 hover:from-blue-600/50 hover:to-indigo-600/50 text-blue-200 text-sm flex items-center gap-2 backdrop-blur-sm border border-blue-500/20"
+                                className="group relative px-6 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-sm font-semibold flex items-center gap-2.5 overflow-hidden"
                                 onClick={() => {
                                   const animation = {
                                     id: message.animationId,
@@ -637,18 +689,27 @@ export default function Dashboard({ activeConversation, conversations, onUpdateM
                                 whileHover={{ 
                                   scale: 1.05, 
                                   y: -3,
-                                  boxShadow: "0 15px 25px -5px rgba(0, 0, 0, 0.3)"
+                                  boxShadow: "0 15px 35px rgba(59, 130, 246, 0.4), 0 0 40px rgba(59, 130, 246, 0.2)"
                                 }}
                                 whileTap={{ 
-                                  scale: 0.95,
-                                  y: 0,
-                                  boxShadow: "0 5px 15px -3px rgba(0, 0, 0, 0.2)"
+                                  scale: 0.97,
+                                  y: 0
+                                }}
+                                style={{
+                                  boxShadow: '0 10px 25px rgba(59, 130, 246, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2)'
                                 }}
                               >
-                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                                {/* Shine effect */}
+                                <motion.div
+                                  className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
+                                  initial={{ x: '-100%' }}
+                                  whileHover={{ x: '200%' }}
+                                  transition={{ duration: 0.6 }}
+                                />
+                                <svg className="w-5 h-5 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
                                 </svg>
-                                Play Fullscreen
+                                <span className="relative z-10">Play Fullscreen</span>
                               </motion.button>
                             </div>
                           </motion.div>
